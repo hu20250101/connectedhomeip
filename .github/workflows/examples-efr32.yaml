@@ -105,25 +105,25 @@ jobs:
           path: |
             silabs-lighting.s37
 
-      - name: Signature bootloader
-        run: |
-          wget https://github.com/SiliconLabs/matter_extension/releases/download/v2.5.0/bootloader_binaries_matter_extension_v2.5.0-1.4.zip && \
-          unzip bootloader_binaries_matter_extension_v2.5.0-1.4.zip && \
+#      - name: Signature bootloader
+#        run: |
+#          wget https://github.com/SiliconLabs/matter_extension/releases/download/v2.5.0/bootloader_binaries_matter_extension_v2.5.0-1.4.zip && \
+#          unzip bootloader_binaries_matter_extension_v2.5.0-1.4.zip && \
 
-      - name: Publish bootloader
-        id: upload_bootloader
-        uses: actions/upload-artifact@v4
-        with:
-          name: bootloader
-          path: |
-            bootloader_binaries/signatured_bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.s37
+#      - name: Publish bootloader
+#        id: upload_bootloader
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: bootloader
+#          path: |
+#            bootloader_binaries/signatured_bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.s37
 
       - name: Echo artifact download URL
         run: |
           APPLICATION_DOWNLOAD_URL="${{ steps.upload_light-application-firmware.outputs.artifact-url }}"
           echo "Artifact application download URL: $APPLICATION_DOWNLOAD_URL"
           
-          BOOTLOADER_DOWNLOAD_URL="${{ steps.upload_bootloader.outputs.artifact-url }}"
-          echo "Artifact bootloader download URL: $BOOTLOADER_DOWNLOAD_URL"          
+#          BOOTLOADER_DOWNLOAD_URL="${{ steps.upload_bootloader.outputs.artifact-url }}"
+#          echo "Artifact bootloader download URL: $BOOTLOADER_DOWNLOAD_URL"
           
           
