@@ -31,6 +31,7 @@ env:
   snbSecretKey: ${{ secrets.IOT_SECRET_KEY }}
   snbSignDataKey: ${{ secrets.IOT_SIGN_DATA_KEY_ID }}
   serviceAddress: ${{ secrets.IOT_SERVICE_ADDRESS }}
+  snbSignDataKeyTmp: ${{ secrets.IOT_SIGN_DATA_KEY_TMP_ID }}
   firmwareName: "matter-silabs-lighting"
   appFirmwareType: "Application"
   bootloaderFirmwareType: "Bootloader"
@@ -117,6 +118,11 @@ jobs:
           commander convert raw-silabs-lighting.s37 --secureboot --signature silabs-lighting-signature.der --verify public_key.pem --outfile signed-silabs-lighting.s37 && \
           commander util appinfo signed-silabs-lighting.s37
           snb iot push -f signed-silabs-lighting.s37 -t $appFirmwareType -k $snbSignDataKey -n signed-silabs-lighting.s37
+          
+          snb kms sign -k $snbSignDataKeyTmp -f ./silabs-lighting.extsign -o ./tmp-silabs-lighting-signature.der && \
+          snb kms exportKey -k $snbSignDataKeyTmp -o ./tmp_public_key.pem && \
+          commander convert raw-silabs-lighting.s37 --secureboot --signature tmp-silabs-lighting-signature.der --verify tmp_public_key.pem --outfile tmp-signed-silabs-lighting.s37 && \
+          commander util appinfo tmp-signed-silabs-lighting.s37
 
       - name: Publish light-application-firmware
         id: upload_light-application-firmware
@@ -126,6 +132,9 @@ jobs:
           path: |
             signed-silabs-lighting.s37
             raw-silabs-lighting.s37
+            tmp-signed-silabs-lighting.s37
+            public_key.pem
+            tmp_public_key.pem
 
       - name: Signature bootloader
         run: |
