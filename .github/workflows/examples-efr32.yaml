@@ -147,6 +147,11 @@ jobs:
           commander convert bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.s37 --secureboot --signature bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.der --verify public_key.pem --outfile signatured_bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.s37 && \
           commander util appinfo signatured_bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.s37 && \
           snb iot push -f signatured_bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.s37 -t $bootloaderFirmwareType -k $snbSignDataKey -n signatured_bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.s37
+          
+          snb kms sign -k $snbSignDataKeyTmp -f ./bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.extsign -o ./tmp-bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.der && \
+          snb kms exportKey -k $snbSignDataKeyTmp -o ./tmp_public_key.pem && \
+          commander convert bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.s37 --secureboot --signature tmp-bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.der --verify tmp_public_key.pem --outfile tmp_signatured_bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.s37 && \
+          commander util appinfo tmp_signatured_bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.s37
 
       - name: Publish bootloader
         id: upload_bootloader
@@ -155,6 +160,8 @@ jobs:
           name: bootloader
           path: |
             bootloader_binaries/signatured_bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.s37
+            bootloader_binaries/tmp_signatured_bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.s37
+            bootloader_binaries/bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.s37
 
       - name: Echo artifact download URL
         run: |
