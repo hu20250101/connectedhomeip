@@ -135,11 +135,12 @@ jobs:
           unzip bootloader_binaries_matter_extension_v2.5.0-1.4.zip && \
           cd bootloader_binaries && \
           commander convert bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.s37 --secureboot --extsign --outfile bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1 && \
-          snb kms sign -keyId $snbSignDataKey --inputFile ./bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.extsign --outputFile ./bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.der && \
+          snb kms sign --keyId $snbSignDataKey --inputFile ./bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.extsign --outputFile ./bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.der && \
           snb kms exportPubKey --keyId $snbSignDataKey --outputFile ./public_key.pem && \
           commander convert bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.s37 --secureboot --signature bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.der --verify public_key.pem --outfile signatured_bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.s37 && \
           commander util appinfo signatured_bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.s37 && \
-          snb obis push --file signatured_bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.s37 --fileType $bootloaderFirmwareType --resourcePackageId $bootloaderResourcePackageId --env TEST
+          mv signatured_bootloader-storage-internal-single-512k-BRD2703A-gsdk4.1.s37 signatured_bootloader.s37 && \
+          snb obis push --file signatured_bootloader.s37 --fileType $bootloaderFirmwareType --resourcePackageId $bootloaderResourcePackageId --env TEST
 
       - name: Publish bootloader
         id: upload_bootloader
